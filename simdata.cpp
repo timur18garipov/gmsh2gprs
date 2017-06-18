@@ -89,7 +89,7 @@ SimData::SimData(string inputstream)
   vsWell[0].vWellCoordinate.push_back(-100.0); // z0
   vsWell[0].vWellCoordinate.push_back(100.0); // z1  
   vsWell[0].Type = "WCONINJE";
-  vsWell[0].radius_poisk = 0.2; // m
+  vsWell[0].radius_poisk = 1; // m
 
   // Kirill's renumbering
   pRenum = new renum(); 
@@ -207,9 +207,9 @@ void SimData::defineRockProperties()
     }
 
       // intial stress
-      double sz = -0;      
-	  double sy = -0;
-	  double sx = -0;
+      double sz = 0;      
+	  double sy = 0;
+	  double sx = 0;
       double sxy = 0;      
       vsCellRockProps[icell].stress[0] = -sx; 
       vsCellRockProps[icell].stress[1] = -sy; 
@@ -228,52 +228,52 @@ void SimData::defineBoundaryAquifersEmil()
 		vsCellRockProps[ic].volmult = 1.0;
 	}
 
-	// loop over all cells and assign the aquifers on the radius
-	double radius_aquifer = 48;
-	for (int icell = 0; icell < nCells; icell++)
-	{
-		double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
-			vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
-		if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
-	}
-
-	//// loop over all faces and find boundary faces
-	//for (int iface = 0; iface < nFaces; iface++)
+	//// loop over all cells and assign the aquifers on the radius
+	//double radius_aquifer = 48;
+	//for (int icell = 0; icell < nCells; icell++)
 	//{
-	//		// criterion 1 (right boundary -1111112)
-	//		// X or Y are dominant then acitvate an aquifer
-	//		if (vsFaceCustom[iface].nMarker == -1111112)
-	//		{
-	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-	//			{
-	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
-	//				vsCellRockProps[icell].volmult = 1e5;
-	//			}
-	//		}
-
-	//		// criterion 2 (upper boundary -2222222)
-	//		// X or Y are dominant then acitvate an aquifer
-	//		if (vsFaceCustom[iface].nMarker == -2222222)
-	//		{
-	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-	//			{
-	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
-	//				vsCellRockProps[icell].volmult = 1e5;
-	//			}
-	//		}
-
-	//		// criterion 3 (bottom boundary -2222221)
-	//		// X or Y are dominant then acitvate an aquifer
-	//		if (vsFaceCustom[iface].nMarker == -2222221)
-	//		{
-	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-	//			{
-	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
-	//				vsCellRockProps[icell].volmult = 1e5;
-	//			}
-	//		}
-
+	//	double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
+	//		vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
+	//	if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
 	//}
+
+	// loop over all faces and find boundary faces
+	for (int iface = 0; iface < nFaces; iface++)
+	{
+			// criterion 1 (right boundary -1111112)
+			// X or Y are dominant then acitvate an aquifer
+			if (vsFaceCustom[iface].nMarker == -1111112)
+			{
+				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+				{
+					int icell = vsFaceCustom[iface].vNeighbors[ic];
+					vsCellRockProps[icell].volmult = 1e5;
+				}
+			}
+
+			// criterion 2 (upper boundary -2222222)
+			// X or Y are dominant then acitvate an aquifer
+			if (vsFaceCustom[iface].nMarker == -2222222)
+			{
+				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+				{
+					int icell = vsFaceCustom[iface].vNeighbors[ic];
+					vsCellRockProps[icell].volmult = 1e5;
+				}
+			}
+
+			// criterion 3 (bottom boundary -2222221)
+			// X or Y are dominant then acitvate an aquifer
+			if (vsFaceCustom[iface].nMarker == -2222221)
+			{
+				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+				{
+					int icell = vsFaceCustom[iface].vNeighbors[ic];
+					vsCellRockProps[icell].volmult = 1e5;
+				}
+			}
+
+	}
 }
 
 void SimData::createDoublePorosityModel()
@@ -1798,6 +1798,9 @@ void SimData::definePhysicalFacets()
   int nfacets = 0;
   int nfluid = 0;
   vsPhysicalFacet.resize(nFaces);
+  vector<set<int>> vDirichletNodesSorted;
+  vDirichletNodesSorted.resize(3);
+  pair<set<int>::iterator, bool> ret;
   for(int iface = 0; iface < nFaces; iface++)
   {
     if( vsFaceCustom[iface].nMarker < 0)
@@ -1821,11 +1824,15 @@ void SimData::definePhysicalFacets()
 	    {
 	      if(vsPhysicalFacet[nfacets].vCondition[k] != dNotNumber)
 	      {
-		vDirichletNode.push_back(vsFaceCustom[iface].vVertices[iv]);
-		vDirichletNodeIdx.push_back(k);
-		vDirichletNodeVal.push_back(vsPhysicalFacet[nfacets].vCondition[k]);
-		nDirichletNodes++;
-	      }
+			  ret = vDirichletNodesSorted[k].insert(vsFaceCustom[iface].vVertices[iv]);
+			  if (ret.second == true)
+			  {
+				  vDirichletNode.push_back(vsFaceCustom[iface].vVertices[iv]);
+				  vDirichletNodeIdx.push_back(k);
+				  vDirichletNodeVal.push_back(vsPhysicalFacet[nfacets].vCondition[k]);
+				  nDirichletNodes++;
+			  }
+		  }
 	    }
 	  }
 	  }

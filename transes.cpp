@@ -1305,9 +1305,6 @@ void CalcTranses::createKarimiApproximation()
   {
     double distance = sqrt ( CVx[i]*CVx[i] + CVy[i]*CVy[i]);
     double mult = 1;
-    //@HACK distance dependent volume
-    if ( distance > 500. )
-      mult = 1e5 * ( distance - 500. );
     CVVolume[i] *= mult;
     fprintf ( poutfile,"%e\n",CVVolume[i] );
   }
