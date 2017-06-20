@@ -228,52 +228,52 @@ void SimData::defineBoundaryAquifersEmil()
 		vsCellRockProps[ic].volmult = 1.0;
 	}
 
-	//// loop over all cells and assign the aquifers on the radius
-	//double radius_aquifer = 48;
-	//for (int icell = 0; icell < nCells; icell++)
-	//{
-	//	double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
-	//		vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
-	//	if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
-	//}
-
-	// loop over all faces and find boundary faces
-	for (int iface = 0; iface < nFaces; iface++)
+	// loop over all cells and assign the aquifers on the radius
+	double radius_aquifer = 48;
+	for (int icell = 0; icell < nCells; icell++)
 	{
-			// criterion 1 (right boundary -1111112)
-			// X or Y are dominant then acitvate an aquifer
-			if (vsFaceCustom[iface].nMarker == -1111112)
-			{
-				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-				{
-					int icell = vsFaceCustom[iface].vNeighbors[ic];
-					vsCellRockProps[icell].volmult = 1e5;
-				}
-			}
-
-			// criterion 2 (upper boundary -2222222)
-			// X or Y are dominant then acitvate an aquifer
-			if (vsFaceCustom[iface].nMarker == -2222222)
-			{
-				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-				{
-					int icell = vsFaceCustom[iface].vNeighbors[ic];
-					vsCellRockProps[icell].volmult = 1e5;
-				}
-			}
-
-			// criterion 3 (bottom boundary -2222221)
-			// X or Y are dominant then acitvate an aquifer
-			if (vsFaceCustom[iface].nMarker == -2222221)
-			{
-				for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
-				{
-					int icell = vsFaceCustom[iface].vNeighbors[ic];
-					vsCellRockProps[icell].volmult = 1e5;
-				}
-			}
-
+		double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
+			vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
+		if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
 	}
+
+	//// loop over all faces and find boundary faces
+	//for (int iface = 0; iface < nFaces; iface++)
+	//{
+	//		// criterion 1 (right boundary -1111112)
+	//		// X or Y are dominant then acitvate an aquifer
+	//		if (vsFaceCustom[iface].nMarker == -1111112)
+	//		{
+	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+	//			{
+	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
+	//				vsCellRockProps[icell].volmult = 1e5;
+	//			}
+	//		}
+
+	//		// criterion 2 (upper boundary -2222222)
+	//		// X or Y are dominant then acitvate an aquifer
+	//		if (vsFaceCustom[iface].nMarker == -2222222)
+	//		{
+	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+	//			{
+	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
+	//				vsCellRockProps[icell].volmult = 1e5;
+	//			}
+	//		}
+
+	//		// criterion 3 (bottom boundary -2222221)
+	//		// X or Y are dominant then acitvate an aquifer
+	//		if (vsFaceCustom[iface].nMarker == -2222221)
+	//		{
+	//			for (int ic = 0; ic < vsFaceCustom[iface].nNeighbors; ++ic)
+	//			{
+	//				int icell = vsFaceCustom[iface].vNeighbors[ic];
+	//				vsCellRockProps[icell].volmult = 1e5;
+	//			}
+	//		}
+
+	//}
 }
 
 void SimData::createDoublePorosityModel()
