@@ -722,12 +722,12 @@ if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 	{
 
 		faceX1[0] = Element3D.vVertices[0];
-		faceX1[1] = Element3D.vVertices[8];
-		faceX1[2] = Element3D.vVertices[3];
-		faceX1[3] = Element3D.vVertices[13];
-		faceX1[4] = Element3D.vVertices[5];
-		faceX1[5] = Element3D.vVertices[11];
-		faceX1[6] = Element3D.vVertices[2];
+		faceX1[1] = Element3D.vVertices[3];
+		faceX1[2] = Element3D.vVertices[5];
+		faceX1[3] = Element3D.vVertices[2];
+		faceX1[4] = Element3D.vVertices[8];
+		faceX1[5] = Element3D.vVertices[13];
+		faceX1[6] = Element3D.vVertices[11];
 		faceX1[7] = Element3D.vVertices[7];
 
 		faceX2 = faceX1;
@@ -747,12 +747,12 @@ if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 		}
 
 		faceX1[0] = Element3D.vVertices[1];
-		faceX1[1] = Element3D.vVertices[10];
-		faceX1[2] = Element3D.vVertices[4];
-		faceX1[3] = Element3D.vVertices[12];
-		faceX1[4] = Element3D.vVertices[3];
-		faceX1[5] = Element3D.vVertices[8];
-		faceX1[6] = Element3D.vVertices[0];
+		faceX1[1] = Element3D.vVertices[4];
+		faceX1[2] = Element3D.vVertices[3];
+		faceX1[3] = Element3D.vVertices[0];
+		faceX1[4] = Element3D.vVertices[10];
+		faceX1[5] = Element3D.vVertices[12];
+		faceX1[6] = Element3D.vVertices[8];
 		faceX1[7] = Element3D.vVertices[6];
 
 		faceX2 = faceX1;
@@ -771,14 +771,14 @@ if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 			nFaces++;
 		}
 
-		faceX1[0] = Element3D.vVertices[2];
-		faceX1[1] = Element3D.vVertices[11];
+		faceX1[0] = Element3D.vVertices[1];
+		faceX1[1] = Element3D.vVertices[2];
 		faceX1[2] = Element3D.vVertices[5];
-		faceX1[3] = Element3D.vVertices[14];
-		faceX1[4] = Element3D.vVertices[4];
-		faceX1[5] = Element3D.vVertices[10];
-		faceX1[6] = Element3D.vVertices[1];
-		faceX1[7] = Element3D.vVertices[9];
+		faceX1[3] = Element3D.vVertices[4];
+		faceX1[4] = Element3D.vVertices[9];
+		faceX1[5] = Element3D.vVertices[11];
+		faceX1[6] = Element3D.vVertices[14];
+		faceX1[7] = Element3D.vVertices[10];
 
 		faceX2 = faceX1;
 
@@ -828,14 +828,14 @@ case 17:
 
 	if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 	{
-
-		faceX1[0] = Element3D.vVertices[0];
-		faceX1[1] = Element3D.vVertices[10];
-		faceX1[2] = Element3D.vVertices[4];
-		faceX1[3] = Element3D.vVertices[17];
-		faceX1[4] = Element3D.vVertices[7];
-		faceX1[5] = Element3D.vVertices[15];
-		faceX1[6] = Element3D.vVertices[3];
+	//1	
+	  faceX1[0] = Element3D.vVertices[0];
+		faceX1[1] = Element3D.vVertices[4];
+		faceX1[2] = Element3D.vVertices[7];
+		faceX1[3] = Element3D.vVertices[3];
+		faceX1[4] = Element3D.vVertices[10];
+		faceX1[5] = Element3D.vVertices[17];
+		faceX1[6] = Element3D.vVertices[15];
 		faceX1[7] = Element3D.vVertices[9];
 
 		faceX2 = faceX1;
@@ -854,14 +854,15 @@ case 17:
 			nFaces++;
 		}
 
-		faceX1[0] = Element3D.vVertices[1];
-		faceX1[1] = Element3D.vVertices[12];
-		faceX1[2] = Element3D.vVertices[5];
-		faceX1[3] = Element3D.vVertices[16];
-		faceX1[4] = Element3D.vVertices[4];
-		faceX1[5] = Element3D.vVertices[10];
-		faceX1[6] = Element3D.vVertices[0];
-		faceX1[7] = Element3D.vVertices[8];
+	//2
+	faceX1[0] = Element3D.vVertices[4];
+		faceX1[1] = Element3D.vVertices[5];
+		faceX1[2] = Element3D.vVertices[6];
+		faceX1[3] = Element3D.vVertices[7];
+		faceX1[4] = Element3D.vVertices[16];
+		faceX1[5] = Element3D.vVertices[18];
+		faceX1[6] = Element3D.vVertices[19];
+		faceX1[7] = Element3D.vVertices[17];
 
 		faceX2 = faceX1;
 
@@ -879,13 +880,40 @@ case 17:
 			nFaces++;
 		}
 
-		faceX1[0] = Element3D.vVertices[2];
-		faceX1[1] = Element3D.vVertices[14];
-		faceX1[2] = Element3D.vVertices[6];
-		faceX1[3] = Element3D.vVertices[18];
-		faceX1[4] = Element3D.vVertices[5];
-		faceX1[5] = Element3D.vVertices[12];
-		faceX1[6] = Element3D.vVertices[1];
+	//3
+		faceX1[0] = Element3D.vVertices[5];
+		faceX1[1] = Element3D.vVertices[1];
+		faceX1[2] = Element3D.vVertices[2];
+		faceX1[3] = Element3D.vVertices[6];
+		faceX1[4] = Element3D.vVertices[12];
+		faceX1[5] = Element3D.vVertices[11];
+		faceX1[6] = Element3D.vVertices[14];
+		faceX1[7] = Element3D.vVertices[18];
+
+		faceX2 = faceX1;
+
+		sort(faceX1.begin(), faceX1.end());
+		ret = VerticesSorted.insert(faceX1);
+		if (ret.second)
+		{
+			Element2D.nMarkerGMSH = atoi(vstrings[4].c_str());
+			Element2D.vVertices = faceX2;
+			Element2D.vtkIndex = 23;
+			Element2D.formIndex = QUAD8;
+			Element2D.nMarker = atoi(vstrings[3].c_str());
+			Element2D.nMarker *= checkReservedBoundaryName(Element2D.nMarker);
+			vsFaceCustom.push_back(Element2D);
+			nFaces++;
+		}
+
+	//4	
+		faceX1[0] = Element3D.vVertices[1];
+		faceX1[1] = Element3D.vVertices[0];
+		faceX1[2] = Element3D.vVertices[3];
+		faceX1[3] = Element3D.vVertices[2];
+		faceX1[4] = Element3D.vVertices[8];
+		faceX1[5] = Element3D.vVertices[9];
+		faceX1[6] = Element3D.vVertices[13];
 		faceX1[7] = Element3D.vVertices[11];
 
 		faceX2 = faceX1;
@@ -903,15 +931,40 @@ case 17:
 			vsFaceCustom.push_back(Element2D);
 			nFaces++;
 		}
-
-		faceX1[0] = Element3D.vVertices[3];
-		faceX1[1] = Element3D.vVertices[8];
-		faceX1[2] = Element3D.vVertices[7];
-		faceX1[3] = Element3D.vVertices[19];
-		faceX1[4] = Element3D.vVertices[6];
+	//5	
+		faceX1[0] = Element3D.vVertices[7];
+		faceX1[1] = Element3D.vVertices[6];
+		faceX1[2] = Element3D.vVertices[2];
+		faceX1[3] = Element3D.vVertices[3];
+		faceX1[4] = Element3D.vVertices[19];
 		faceX1[5] = Element3D.vVertices[14];
-		faceX1[6] = Element3D.vVertices[2];
-		faceX1[7] = Element3D.vVertices[13];
+		faceX1[6] = Element3D.vVertices[13];
+		faceX1[7] = Element3D.vVertices[15];
+
+		faceX2 = faceX1;
+
+		sort(faceX1.begin(), faceX1.end());
+		ret = VerticesSorted.insert(faceX1);
+		if (ret.second)
+		{
+			Element2D.nMarkerGMSH = atoi(vstrings[4].c_str());
+			Element2D.vVertices = faceX2;
+			Element2D.vtkIndex = 23;
+			Element2D.formIndex = QUAD8;
+			Element2D.nMarker = atoi(vstrings[3].c_str());
+			Element2D.nMarker *= checkReservedBoundaryName(Element2D.nMarker);
+			vsFaceCustom.push_back(Element2D);
+			nFaces++;
+		}
+	//6	
+		faceX1[0] = Element3D.vVertices[1];
+		faceX1[1] = Element3D.vVertices[0];
+		faceX1[2] = Element3D.vVertices[4];
+		faceX1[3] = Element3D.vVertices[5];
+		faceX1[4] = Element3D.vVertices[8];
+		faceX1[5] = Element3D.vVertices[10];
+		faceX1[6] = Element3D.vVertices[16];
+		faceX1[7] = Element3D.vVertices[12];
 
 		faceX2 = faceX1;
 
