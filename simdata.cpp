@@ -1092,6 +1092,11 @@ void SimData::extractInternalFaces()
         {
           temporaryElement.vtkIndex = 22;
           temporaryElement.formIndex = TRGLE6;
+	  int j = 0;
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
         }
 
         if ( temporaryElement.nVertices == 4 )
@@ -1104,12 +1109,14 @@ void SimData::extractInternalFaces()
         {
           temporaryElement.vtkIndex = 23;
           temporaryElement.formIndex = QUAD8;
+	  int j = 0;
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
         }
-
         temporaryElement.nMarker = 0;
-
-        vsFaceCustom.push_back ( temporaryElement );
-            
+        vsFaceCustom.push_back ( temporaryElement );            
       }
     }
   }
@@ -1397,6 +1404,7 @@ void SimData::methodFaceNormalVector(int nelem, vector<Gelement> &vsElement)
 
 void SimData::methodChangeFacesNormalVector()
 {  
+  vector<int> vVertices(256,0);
   pair<set<int>::iterator, bool> pairIterBool;
   vector<double> vDatumNormal;
   vDatumNormal.resize(3, 0.0);
@@ -1449,21 +1457,35 @@ void SimData::methodChangeFacesNormalVector()
         // non collinear vector. change verticies order
         if(cosa < 0.0)
         {
-          vFacevVertices.clear();
-          for(int ivrtx = 0; ivrtx < vsFaceCustom[iface].nVertices; ivrtx++)
+          if(vsFaceCustom[iface].formIndex == QUAD8)
           {
-            vFacevVertices.push_back( vsFaceCustom[iface].vVertices[ vsFaceCustom[iface].nVertices - ivrtx - 1] );
+           reverse(vsFaceCustom[iface].vVertices.begin(),vsFaceCustom[iface].vVertices.begin()+4);
+           for(unsigned int i = 4; i < 8; ++i)
+             vVertices[i] = vsFaceCustom[iface].vVertices[i];
+           vsFaceCustom[iface].vVertices[4] = vVertices[6];
+           vsFaceCustom[iface].vVertices[5] = vVertices[5];
+           vsFaceCustom[iface].vVertices[6] = vVertices[4];
+           vsFaceCustom[iface].vVertices[7] = vVertices[7];
           }
-          vsFaceCustom[iface].vVertices.swap(vFacevVertices);
+          else if(vsFaceCustom[iface].formIndex == TRGLE6)
+          {
+            reverse(vsFaceCustom[iface].vVertices.begin(), vsFaceCustom[iface].vVertices.begin() + 3);
+            for(unsigned int i = 3; i < 6; ++i)
+              vVertices[i] = vsFaceCustom[iface].vVertices[i];
+            vsFaceCustom[iface].vVertices[3] = vVertices[4];
+            vsFaceCustom[iface].vVertices[4] = vVertices[3];
+            vsFaceCustom[iface].vVertices[5] = vVertices[5];
+          }
+          else
+          {
+           reverse(vsFaceCustom[iface].vVertices.begin(),vsFaceCustom[iface].vVertices.end());
+          }          
 
           for(int idx = 0; idx < 3; idx++) vsFaceCustom[iface].vNormal[idx] *= -1.0;
-
         }
-
       }
     }
-  }
-    
+  }    
 }
 
 void SimData::methodRandomRockProperties()
