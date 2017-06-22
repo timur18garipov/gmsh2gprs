@@ -1092,6 +1092,11 @@ void SimData::extractInternalFaces()
         {
           temporaryElement.vtkIndex = 22;
           temporaryElement.formIndex = TRGLE6;
+	  int j = 0;
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
         }
 
         if ( temporaryElement.nVertices == 4 )
@@ -1104,12 +1109,14 @@ void SimData::extractInternalFaces()
         {
           temporaryElement.vtkIndex = 23;
           temporaryElement.formIndex = QUAD8;
+	  int j = 0;
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
         }
-
         temporaryElement.nMarker = 0;
-
-        vsFaceCustom.push_back ( temporaryElement );
-            
+        vsFaceCustom.push_back ( temporaryElement );            
       }
     }
   }
@@ -1475,13 +1482,10 @@ void SimData::methodChangeFacesNormalVector()
           }          
 
           for(int idx = 0; idx < 3; idx++) vsFaceCustom[iface].vNormal[idx] *= -1.0;
-
         }
-
       }
     }
-  }
-    
+  }    
 }
 
 void SimData::methodRandomRockProperties()
