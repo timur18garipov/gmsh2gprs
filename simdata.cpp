@@ -84,7 +84,7 @@ SimData::SimData(string inputstream)
   
   // well 1
   vsWell[0].vWellCoordinate.clear();
-  vsWell[0].vWellCoordinate.push_back(0.1); // x
+  vsWell[0].vWellCoordinate.push_back(0.0); // x
   vsWell[0].vWellCoordinate.push_back(0.0); // y
   vsWell[0].vWellCoordinate.push_back(-100.0); // z0
   vsWell[0].vWellCoordinate.push_back(100.0); // z1  
@@ -227,17 +227,22 @@ void SimData::defineBoundaryAquifersEmil()
 	{
 		vsCellRockProps[ic].volmult = 1.0;
 	}
-
-	// loop over all cells and assign the aquifers on the radius
-	double radius_aquifer = 48;
-	for (int icell = 0; icell < nCells; icell++)
+	// Option 1. Assign aquifer on marker
+	for (int icell = 0; icell < nCells; icell++ )
 	{
-		double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
-			vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
-		if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
+		if (vsCellCustom[icell].nMarker == 9999992) vsCellRockProps[icell].volmult = 1e5;
 	}
 
-	//// loop over all faces and find boundary faces
+	//// Option 2. loop over all cells and assign the aquifers on the radius
+	//double radius_aquifer = 48;
+	//for (int icell = 0; icell < nCells; icell++)
+	//{
+	//	double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
+	//		vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
+	//	if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
+	//}
+
+	//// Option 3. loop over all faces and find boundary faces
 	//for (int iface = 0; iface < nFaces; iface++)
 	//{
 	//		// criterion 1 (right boundary -1111112)
@@ -1937,10 +1942,6 @@ void SimData::definePhysicalFacets()
   }
   nPhysicalFacets = nfacets; 
   
-  std::default_random_engine generator;
-  std::default_random_engine generator2;
-  std::normal_distribution<double> distribution(100.0, 20.0);
-  std::normal_distribution<double> distribution2(10.0, 2.0); //mD
   for(int iface = 0; iface < nFaces; iface++)
   {    
     vsFaceCustom[iface].aperture = 1e-5; 
@@ -1950,7 +1951,6 @@ void SimData::definePhysicalFacets()
 	if (vsFaceCustom[iface].nMarker == 1)
 	{
 		vsFaceCustom[iface].active_segment = 1;    // active
-		vsFaceCustom[iface].conductivity = 2.5e-004;
 	}      
   }
 }
