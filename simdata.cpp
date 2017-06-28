@@ -1951,6 +1951,7 @@ void SimData::definePhysicalFacets()
 	if (vsFaceCustom[iface].nMarker == 1)
 	{
 		vsFaceCustom[iface].active_segment = 1;    // active
+		vsFaceCustom[iface].conductivity = 2.5e+006;  // activate this line when running WITHOUT geomechanics
 	}      
   }
 }
