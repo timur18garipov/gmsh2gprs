@@ -63,6 +63,7 @@ void CalcTranses::createKarimiData()
   
   cout << "\t create karimi 2D elements" << endl;
   int code_polygon = 0;
+  vector<int> vertices_;
   vNbFNodes.clear();
   vvFNodes.clear();
   vCodePolygon.clear();
@@ -72,8 +73,22 @@ void CalcTranses::createKarimiData()
   {
     if(pSim->vsFaceCustom[ipoly].nMarker > 0)
     {
-      vvFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices); 
-      vNbFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices.size() ); 
+      if(pSim->vsFaceCustom[ipoly].formIndex == TRGLE6 || pSim->vsFaceCustom[ipoly].formIndex == QUAD8)
+      {
+	vertices_.assign(pSim->vsFaceCustom[ipoly].vVertices.size() / 2, 0);
+	for(unsigned int i = 0; i < pSim->vsFaceCustom[ipoly].vVertices.size() / 2; ++i)
+	{
+	  vertices_[i] = pSim->vsFaceCustom[ipoly].vVertices[i];
+	}
+	vvFNodes.push_back( vertices_); 
+	vNbFNodes.push_back( vertices_.size() ); 
+      }
+      else
+      {
+	vvFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices); 
+	vNbFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices.size() ); 
+      }
+      
       vCodePolygon.push_back( code_polygon ); 
       code_polygon++;
       vConductivity.push_back(pSim->vsFaceCustom[ipoly].conductivity); 
@@ -81,12 +96,24 @@ void CalcTranses::createKarimiData()
     }    
     else
     {
-      vvFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices); 
-      vNbFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices.size() ); 
+      if(pSim->vsFaceCustom[ipoly].formIndex == TRGLE6 || pSim->vsFaceCustom[ipoly].formIndex == QUAD8)
+      {
+	vertices_.assign(pSim->vsFaceCustom[ipoly].vVertices.size() / 2, 0);
+	for(unsigned int i = 0; i < pSim->vsFaceCustom[ipoly].vVertices.size() / 2; ++i)
+	{
+	  vertices_[i] = pSim->vsFaceCustom[ipoly].vVertices[i];
+	}
+	vvFNodes.push_back( vertices_); 
+	vNbFNodes.push_back( vertices_.size() ); 
+      }
+      else
+      {
+	vvFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices); 
+	vNbFNodes.push_back( pSim->vsFaceCustom[ipoly].vVertices.size() ); 
+      }
       vCodePolygon.push_back( -1 );
     }    
   }
-  
   cout << "\t create karimi 3D elements\n";
   set<int>::iterator itintset;
   vNbVFaces.clear();
@@ -319,6 +346,7 @@ void CalcTranses::ComputeControlVolumeList()
     CVz		=	(double*)malloc(NbCVs*(sizeof(double)));
 
     for (i=0;i<NbPolygons;i++)
+    {
         if (EQF[i]!=-1)	// Active polygon
         {
             j=EQF[i];
@@ -329,6 +357,7 @@ void CalcTranses::ComputeControlVolumeList()
             CVz[j]=FZG[i];
             CVVolume[j]=FArea[i]*ZVolumeFactor[CVZone[j]];
         }
+    }
         
     for (i=0;i<NbPolyhedra;i++)
     {
@@ -1302,22 +1331,8 @@ void CalcTranses::createKarimiApproximation()
   //fprintf(out,"%d\n",NbCVs);
   fprintf ( poutfile,"%s\n","VOLUME" );
   for ( i=0; i<NbCVs; i++ )
-  {
-    double distance = sqrt ( CVx[i]*CVx[i] + CVy[i]*CVy[i]);
-    double mult = 1;
-    //@HACK distance dependent volume
-    if ( distance > 500. )
-      mult = 1e5 * ( distance - 500. );
-    CVVolume[i] *= mult;
     fprintf ( poutfile,"%e\n",CVVolume[i] );
-  }
 
-  printf ( "Output Ghost Volumes...\n" );
-  for ( i=0; i<NbCVs; i++ )
-  {
-    if ( vIbHasGhostIb[i] )
-      fprintf ( poutfile,"%e\n",CVVolume[i] * pSim->dGhostFraction);
-  }
   fprintf ( poutfile,"%s\n","/\n" );
   fclose ( poutfile );
 
@@ -1331,14 +1346,6 @@ void CalcTranses::createKarimiApproximation()
     fprintf(poutfile,"%s\n","PORO");
     for (i=0;i<NbCVs;i++) fprintf(poutfile,"%e\n",ZPorosity[CVZone[i]]);
     
-    // @HACK Dual porosity/permeability model
-    printf("Output Ghost Porosity...\n");
-    for (i=0;i<NbCVs;i++) 
-    {
-      if(vIbHasGhostIb[i])
-	fprintf(poutfile,"%e\n",1.0);
-    }
-
     fprintf(poutfile,"%s\n","/\n");
     fclose(poutfile);
 
@@ -1350,13 +1357,6 @@ void CalcTranses::createKarimiApproximation()
     fprintf(poutfile,"%s\n","DEPTH");    
     for (i=0;i<NbCVs;i++) 
       fprintf(poutfile,"%e\n",fabs(CVz[i]));
-
-    printf("Output Ghost Depth...\n");    
-    for (i=0;i<NbCVs;i++) 
-    {
-      if(vIbHasGhostIb[i])
-	fprintf(poutfile,"%e\n",fabs(CVz[i]));
-    }
     
     fprintf(poutfile,"%s\n","/\n");
     fclose(poutfile);
@@ -1366,65 +1366,10 @@ void CalcTranses::createKarimiApproximation()
     outfile = "fl_tran.txt";    
     poutfile=fopen( outfile.c_str(),"w");
     fprintf(poutfile,"%s\n","TPFACONNS");
-
-    printf("Output Ghost Transmissibility...\n");
-    int additional_transes = 0;
+    fprintf(poutfile,"%d\n",NbTransmissibility);
+   
     for (i=0;i<NbTransmissibility;i++)
-    {
-      bool good_connection = false;
-      if(vIbHasGhostIb[iTr[i]] && vIbHasGhostIb[jTr[i]]) good_connection = true;
-      if(iTr[i] < NbFracs && vIbHasGhostIb[jTr[i]])  good_connection = true;
-      if(jTr[i] < NbFracs && vIbHasGhostIb[iTr[i]])  good_connection = true;	
-      if(good_connection) additional_transes++;
-    }
-    printf("Output Ghost<->Master Transmissibility...\n");    
-    for (i=0;i<NbCVs;i++) 
-    {
-      if(vIbHasGhostIb[i])
-	additional_transes++;
-    }    
-    fprintf(poutfile,"%d\n",NbTransmissibility+additional_transes);
-    
-    for (i=0;i<NbTransmissibility;i++)
-    {
       fprintf(poutfile,"%d\t%d\t%e\n",iTr[i],jTr[i],Tij[i] * 0.0085267146719160104986876640419948);
-    }
-
-    printf("Output Ghost Transmissibility...\n");
-    for (i=0;i<NbTransmissibility;i++)
-    {
-      bool good_connection = false;
-      if(vIbHasGhostIb[iTr[i]] && vIbHasGhostIb[jTr[i]]) good_connection = true;
-      if(iTr[i] < NbFracs && vIbHasGhostIb[jTr[i]])  good_connection = true;
-      if(jTr[i] < NbFracs && vIbHasGhostIb[iTr[i]])  good_connection = true;	
-      if(good_connection)
-      {
-	int n1 = iTr[i];
-	int n2 = jTr[i];
-	double perm1 = vZPermeability[n1*3+0];
-	double perm2 = vZPermeability[n2*3+0];
-	double perm = 2.* perm1 * perm2 / (perm1 + perm2);
-	double trans = Tij[i] / perm * pSim->dGhostPermeability * pSim->dGhostFraction;	
-	
-	if(vIbToGhostIb[iTr[i]] > -1)
-	  n1 = vIbToGhostIb[iTr[i]];
-
-	if(vIbToGhostIb[jTr[i]] > -1)
-	  n2 = vIbToGhostIb[jTr[i]];
-	
-	fprintf(poutfile,"%d\t%d\t%e\n",n1,n2, trans * 0.0085267146719160104986876640419948);
-      }      
-    }
-    
-    printf("Output Ghost<->Master Transmissibility...\n");    
-    for (i=0;i<NbCVs;i++) 
-    {
-      if(vIbHasGhostIb[i])
-      {
-	double trans_geometry = pSim->dGhost2MasterTransGeomPart * pSim->vsCellCustom[i-NbFracs].thickness;
-	fprintf(poutfile,"%d\t%d\t%e\n",i,vIbToGhostIb[i],trans_geometry *  pSim->vsCellRockProps[i-NbFracs].perm * 0.0085267146719160104986876640419948);
-      }
-    }    
         
     fprintf(poutfile,"%s\n","/\n");
     fclose(poutfile);
@@ -1433,45 +1378,10 @@ void CalcTranses::createKarimiApproximation()
     outfile = "fl_tran_n.txt";    
     poutfile=fopen( outfile.c_str(),"w");
     fprintf(poutfile,"%s\n","TPFACONNSN");
-    fprintf(poutfile,"%d\n",NbTransmissibility+additional_transes);
+    fprintf(poutfile,"%d\n",NbTransmissibility);
     
-    //TODO 0.00852702
     for (i=0;i<NbTransmissibility;i++) 
       fprintf(poutfile,"%d\t%d\t%e\t%e\n",iTr[i],jTr[i],Tij[i] * 0.0085267146719160104986876640419948, TConductionIJ[i]);
-    
-    printf("Output Ghost Transmissibility and and Geometrical part...\n");
-    for (i=0;i<NbTransmissibility;i++)
-    {
-      bool good_connection = false;
-      if(vIbHasGhostIb[iTr[i]] && vIbHasGhostIb[jTr[i]]) good_connection = true;
-      if(iTr[i] < NbFracs && vIbHasGhostIb[jTr[i]])  good_connection = true;
-      if(jTr[i] < NbFracs && vIbHasGhostIb[iTr[i]])  good_connection = true;	
-      if(good_connection)
-      {
-	int n1 = iTr[i];
-	int n2 = jTr[i];
-	double perm1 = vZPermeability[n1*3+0];
-	double perm2 = vZPermeability[n2*3+0];
-	double perm = 2.* perm1 * perm2 / (perm1 + perm2);
-	double trans = Tij[i] / perm * pSim->dGhostPermeability * pSim->dGhostFraction;	
-	
-	if(vIbToGhostIb[iTr[i]] > -1) n1 = vIbToGhostIb[iTr[i]];
-	if(vIbToGhostIb[jTr[i]] > -1) n2 = vIbToGhostIb[jTr[i]];
-	
-	double trans2 = Tij[i] / perm * pSim->dGhostFraction;
-	fprintf(poutfile,"%d\t%d\t%e\t%e\n",n1,n2,trans * 0.0085267146719160104986876640419948, TConductionIJ[i] * trans2);
-      }      
-    }
-    
-    printf("Output Ghost<->Master Transmissibility and Geometrical part...\n");    
-    for (i=NbFracs;i<NbCVs;i++) 
-    {
-      if(vIbHasGhostIb[i])
-      {
-	double trans_geometry = pSim->dGhost2MasterTransGeomPart * pSim->vsCellCustom[i-NbFracs].thickness;
-	fprintf(poutfile,"%d\t%d\t%e\t%e\n",i,vIbToGhostIb[i],trans_geometry *  pSim->vsCellRockProps[i-NbFracs].perm * 0.0085267146719160104986876640419948, trans_geometry);
-      }
-    }     
         
     fprintf(poutfile,"%s\n","/\n");
     fclose(poutfile);

@@ -89,7 +89,7 @@ SimData::SimData(string inputstream)
   vsWell[0].vWellCoordinate.push_back(-100.0); // z0
   vsWell[0].vWellCoordinate.push_back(100.0); // z1  
   vsWell[0].Type = "WCONINJE";
-  vsWell[0].radius_poisk = 0.2; // m
+  vsWell[0].radius_poisk = 1.; // m
 
   // Kirill's renumbering
   pRenum = new renum(); 
@@ -227,15 +227,20 @@ void SimData::defineBoundaryAquifersEmil()
 	{
 		vsCellRockProps[ic].volmult = 1.0;
 	}
-
-	// loop over all cells and assign the aquifers on the radius
-	double radius_aquifer = 48;
-	for (int icell = 0; icell < nCells; icell++)
+	// Option 1. Assign aquifer on marker
+	for (int icell = 0; icell < nCells; icell++ )
 	{
-		double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
-			vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
-		if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
-	}
+		if (vsCellCustom[icell].nMarker == 9999992) vsCellRockProps[icell].volmult = 1e5;
+	}	
+
+	// Option 2. loop over all cells and assign the aquifers on the radius
+	//double radius_aquifer = 48;
+	//for (int icell = 0; icell < nCells; icell++)
+	//{
+	//	double distance = sqrt(vsCellCustom[icell].vCenter[0] * vsCellCustom[icell].vCenter[0] +
+	//		vsCellCustom[icell].vCenter[1] * vsCellCustom[icell].vCenter[1]);
+	//	if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
+	//}
 
 	//// loop over all faces and find boundary faces
 	//for (int iface = 0; iface < nFaces; iface++)
@@ -638,7 +643,6 @@ case 6:
 	Element3D.nMarker = atoi(vstrings[3].c_str());
 	vsCellCustom.push_back(Element3D);
 	nCells++;
-
 	if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 	{
 
@@ -684,10 +688,10 @@ case 6:
 			nFaces++;
 		}
 
-		face1[0] = Element3D.vVertices[0];
-		face1[1] = Element3D.vVertices[2];
-		face1[2] = Element3D.vVertices[5];
-		face1[3] = Element3D.vVertices[3];
+		face1[0] = Element3D.vVertices[2];
+		face1[1] = Element3D.vVertices[0];
+		face1[2] = Element3D.vVertices[3];
+		face1[3] = Element3D.vVertices[5];
 
 		face2 = face1;
 
@@ -722,38 +726,13 @@ if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 	{
 
 		faceX1[0] = Element3D.vVertices[0];
-		faceX1[1] = Element3D.vVertices[3];
-		faceX1[2] = Element3D.vVertices[5];
-		faceX1[3] = Element3D.vVertices[2];
-		faceX1[4] = Element3D.vVertices[8];
-		faceX1[5] = Element3D.vVertices[13];
-		faceX1[6] = Element3D.vVertices[11];
-		faceX1[7] = Element3D.vVertices[7];
-
-		faceX2 = faceX1;
-
-		sort(faceX1.begin(), faceX1.end());
-		ret = VerticesSorted.insert(faceX1);
-		if (ret.second)
-		{
-			Element2D.nMarkerGMSH = atoi(vstrings[4].c_str());
-			Element2D.vVertices = faceX2;
-			Element2D.vtkIndex = 23;
-			Element2D.formIndex = QUAD8;
-			Element2D.nMarker = atoi(vstrings[3].c_str());
-			Element2D.nMarker *= checkReservedBoundaryName(Element2D.nMarker);
-			vsFaceCustom.push_back(Element2D);
-			nFaces++;
-		}
-
-		faceX1[0] = Element3D.vVertices[1];
-		faceX1[1] = Element3D.vVertices[4];
-		faceX1[2] = Element3D.vVertices[3];
-		faceX1[3] = Element3D.vVertices[0];
-		faceX1[4] = Element3D.vVertices[10];
-		faceX1[5] = Element3D.vVertices[12];
-		faceX1[6] = Element3D.vVertices[8];
-		faceX1[7] = Element3D.vVertices[6];
+		faceX1[1] = Element3D.vVertices[1];
+		faceX1[2] = Element3D.vVertices[4];
+		faceX1[3] = Element3D.vVertices[3];
+		faceX1[4] = Element3D.vVertices[6];
+		faceX1[5] = Element3D.vVertices[10];
+		faceX1[6] = Element3D.vVertices[12];
+		faceX1[7] = Element3D.vVertices[8];
 
 		faceX2 = faceX1;
 
@@ -779,6 +758,31 @@ if (Element3D.nMarker > 0 && Element3D.nMarker < 1111110)
 		faceX1[5] = Element3D.vVertices[11];
 		faceX1[6] = Element3D.vVertices[14];
 		faceX1[7] = Element3D.vVertices[10];
+
+		faceX2 = faceX1;
+
+		sort(faceX1.begin(), faceX1.end());
+		ret = VerticesSorted.insert(faceX1);
+		if (ret.second)
+		{
+			Element2D.nMarkerGMSH = atoi(vstrings[4].c_str());
+			Element2D.vVertices = faceX2;
+			Element2D.vtkIndex = 23;
+			Element2D.formIndex = QUAD8;
+			Element2D.nMarker = atoi(vstrings[3].c_str());
+			Element2D.nMarker *= checkReservedBoundaryName(Element2D.nMarker);
+			vsFaceCustom.push_back(Element2D);
+			nFaces++;
+		}
+
+		faceX1[0] = Element3D.vVertices[2];
+		faceX1[1] = Element3D.vVertices[0];
+		faceX1[2] = Element3D.vVertices[3];
+		faceX1[3] = Element3D.vVertices[5];
+		faceX1[4] = Element3D.vVertices[7];
+		faceX1[5] = Element3D.vVertices[8];
+		faceX1[6] = Element3D.vVertices[13];
+		faceX1[7] = Element3D.vVertices[11];
 
 		faceX2 = faceX1;
 
@@ -1028,9 +1032,8 @@ void SimData::extractInternalFaces()
   {
     setLocalPolygonVertices.clear();
     for(int ivrtx = 0; ivrtx < vsFaceCustom[iface].nVertices; ivrtx++ )
-    {
       setLocalPolygonVertices.insert ( vsFaceCustom[iface].vVertices[ivrtx] );
-    }
+
     set<int>::iterator it_set;
     vertices_stream.str ( "" ); 
     for(it_set = setLocalPolygonVertices.begin(); it_set != setLocalPolygonVertices.end(); ++it_set) vertices_stream << *it_set;
@@ -1038,6 +1041,8 @@ void SimData::extractInternalFaces()
     pair_itstring_bool = setIdenticalPolygons.insert ( vertices_stream.str() );    
   }
 
+  cout << nFaces << endl;
+  
   // we dont know how many polygons
   for ( int icell = 0; icell < nCells; icell++ )
   {
@@ -1094,9 +1099,9 @@ void SimData::extractInternalFaces()
           temporaryElement.formIndex = TRGLE6;
 	  int j = 0;
 	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
-	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
-	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
-	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[j];
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[j];
         }
 
         if ( temporaryElement.nVertices == 4 )
@@ -1111,18 +1116,16 @@ void SimData::extractInternalFaces()
           temporaryElement.formIndex = QUAD8;
 	  int j = 0;
 	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
-	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
-	  for(unsigned int i = 1; i < temporaryElement.nVertices; i=i+2, j++)
-	    temporaryElement.vVertices[j] = vLocalPolygonVertices[i];
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[j];
+	  for(unsigned int i = 0; i < temporaryElement.nVertices; i=i+2, j++)
+	    temporaryElement.vVertices[j] = vLocalPolygonVertices[j];
         }
         temporaryElement.nMarker = 0;
         vsFaceCustom.push_back ( temporaryElement );            
       }
     }
-  }
-  
-  nFaces = vsFaceCustom.size();  
-  
+  }  
+  nFaces = vsFaceCustom.size();
 }
 
 void SimData::convertGmsh2Sim()
@@ -1222,6 +1225,7 @@ void SimData::convertGmsh2Sim()
     }
 
     vsCellCustom[icell].nNeighbors = vsCellCustom[icell].vNeighbors.size();
+    sort(vsCellCustom[icell].vNeighbors.begin(),vsCellCustom[icell].vNeighbors.end());
   } 
   
   
@@ -1246,6 +1250,8 @@ void SimData::convertGmsh2Sim()
 
     for ( it_set = vsetPolygonPolyhedron[iface].begin(); it_set != vsetPolygonPolyhedron[iface].end(); ++it_set )
       vsFaceCustom[iface].vNeighbors.push_back ( *it_set );
+
+    sort(vsFaceCustom[iface].vNeighbors.begin(),vsFaceCustom[iface].vNeighbors.end());
     
     vsFaceCustom[iface].nNeighbors = vsFaceCustom[iface].vNeighbors.size();
     
@@ -1930,21 +1936,29 @@ void SimData::definePhysicalFacets()
   }
   nPhysicalFacets = nfacets; 
   
-  std::default_random_engine generator;
-  std::default_random_engine generator2;
-  std::normal_distribution<double> distribution(100.0, 20.0);
-  std::normal_distribution<double> distribution2(10.0, 2.0); //mD
-  for(int iface = 0; iface < nFaces; iface++)
-  {    
-    vsFaceCustom[iface].aperture = 1e-5; 
-    vsFaceCustom[iface].conductivity = 2.5e-004;
-    //@EMIL
-    vsFaceCustom[iface].active_segment = 0; // passive   
-	if (vsFaceCustom[iface].nMarker == 1)
-	{
-		vsFaceCustom[iface].active_segment = 1;    // active
-		vsFaceCustom[iface].conductivity = 2.5e-004;
-	}      
+  // std::default_random_engine generator;
+  // std::default_random_engine generator2;
+  // std::normal_distribution<double> distribution(100.0, 20.0);
+  // std::normal_distribution<double> distribution2(10.0, 2.0); //mD
+  for ( int iface = 0; iface < nFaces; iface++ )
+  {
+    // @EMIL set passive state and small conductivity value
+    vsFaceCustom[iface].aperture = 1e-5; // m
+    vsFaceCustom[iface].conductivity = 2.5e-004; // mD.m
+    vsFaceCustom[iface].active_segment = 0;
+    // we have reservoir permeability km = 25mD
+    // permeability = 2.5e-4 / 1e-5 = 25 mD
+
+    // @EMIL set active state and high conductivity value
+    // Make this assumption for user provided fractures
+    if ( vsFaceCustom[iface].nMarker == 1 )
+    {
+      vsFaceCustom[iface].active_segment = 1;
+      vsFaceCustom[iface].aperture = 1e-5; // m
+      vsFaceCustom[iface].conductivity = 1e5; // mD.m
+      // permeability of the active segments must be >> km
+      // permeability = 10 / 1e-5 = 1e6 mD
+    }
   }
 }
 

@@ -192,9 +192,9 @@ StandardElements::StandardElements()
   elementProps[PRISM6].vvFacesNodes[0].push_back(1);
   elementProps[PRISM6].vvFacesNodes[0].push_back(0);
   
+  elementProps[PRISM6].vvFacesNodes[1].push_back(5);
   elementProps[PRISM6].vvFacesNodes[1].push_back(3);
   elementProps[PRISM6].vvFacesNodes[1].push_back(4);
-  elementProps[PRISM6].vvFacesNodes[1].push_back(5);
 
   elementProps[PRISM6].vvFacesNodes[2].push_back(0);
   elementProps[PRISM6].vvFacesNodes[2].push_back(1);
@@ -217,26 +217,46 @@ StandardElements::StandardElements()
   elementProps[PRISM15].facesInElement = 5;
     
   elementProps[PRISM15].vvFacesNodes.resize(5);
-  elementProps[PRISM15].vvFacesNodes[0].push_back(2); elementProps[PRISM15].vvFacesNodes[0].push_back(9); elementProps[PRISM15].vvFacesNodes[0].push_back(1);
-  elementProps[PRISM15].vvFacesNodes[0].push_back(6); elementProps[PRISM15].vvFacesNodes[0].push_back(0); elementProps[PRISM15].vvFacesNodes[0].push_back(7);
+  elementProps[PRISM15].vvFacesNodes[0].push_back(2);
+  elementProps[PRISM15].vvFacesNodes[0].push_back(1); 
+  elementProps[PRISM15].vvFacesNodes[0].push_back(0);
+  elementProps[PRISM15].vvFacesNodes[0].push_back(9); 
+  elementProps[PRISM15].vvFacesNodes[0].push_back(6); 
+  elementProps[PRISM15].vvFacesNodes[0].push_back(7);
   
-  elementProps[PRISM15].vvFacesNodes[1].push_back(5); elementProps[PRISM15].vvFacesNodes[1].push_back(14); elementProps[PRISM15].vvFacesNodes[1].push_back(4);
-  elementProps[PRISM15].vvFacesNodes[1].push_back(12); elementProps[PRISM15].vvFacesNodes[1].push_back(3); elementProps[PRISM15].vvFacesNodes[1].push_back(13);
+  elementProps[PRISM15].vvFacesNodes[1].push_back(5); 
+  elementProps[PRISM15].vvFacesNodes[1].push_back(3); 
+  elementProps[PRISM15].vvFacesNodes[1].push_back(4);
+  elementProps[PRISM15].vvFacesNodes[1].push_back(13); 
+  elementProps[PRISM15].vvFacesNodes[1].push_back(12); 
+  elementProps[PRISM15].vvFacesNodes[1].push_back(14);
 
-  elementProps[PRISM15].vvFacesNodes[2].push_back(0); elementProps[PRISM15].vvFacesNodes[2].push_back(6);
-  elementProps[PRISM15].vvFacesNodes[2].push_back(1); elementProps[PRISM15].vvFacesNodes[2].push_back(10);
-  elementProps[PRISM15].vvFacesNodes[2].push_back(4); elementProps[PRISM15].vvFacesNodes[2].push_back(12);
-  elementProps[PRISM15].vvFacesNodes[2].push_back(3); elementProps[PRISM15].vvFacesNodes[2].push_back(8);
+  elementProps[PRISM15].vvFacesNodes[2].push_back(0); 
+  elementProps[PRISM15].vvFacesNodes[2].push_back(1);
+  elementProps[PRISM15].vvFacesNodes[2].push_back(4); 
+  elementProps[PRISM15].vvFacesNodes[2].push_back(3);
+  elementProps[PRISM15].vvFacesNodes[2].push_back(6); 
+  elementProps[PRISM15].vvFacesNodes[2].push_back(10);
+  elementProps[PRISM15].vvFacesNodes[2].push_back(12); 
+  elementProps[PRISM15].vvFacesNodes[2].push_back(8);
   
-  elementProps[PRISM15].vvFacesNodes[3].push_back(1); elementProps[PRISM15].vvFacesNodes[3].push_back(9);
-  elementProps[PRISM15].vvFacesNodes[3].push_back(2); elementProps[PRISM15].vvFacesNodes[3].push_back(11);
-  elementProps[PRISM15].vvFacesNodes[3].push_back(5); elementProps[PRISM15].vvFacesNodes[3].push_back(14);
-  elementProps[PRISM15].vvFacesNodes[3].push_back(4); elementProps[PRISM15].vvFacesNodes[3].push_back(10);
+  elementProps[PRISM15].vvFacesNodes[3].push_back(1); 
+  elementProps[PRISM15].vvFacesNodes[3].push_back(2);
+  elementProps[PRISM15].vvFacesNodes[3].push_back(5); 
+  elementProps[PRISM15].vvFacesNodes[3].push_back(4);
+  elementProps[PRISM15].vvFacesNodes[3].push_back(9); 
+  elementProps[PRISM15].vvFacesNodes[3].push_back(11);
+  elementProps[PRISM15].vvFacesNodes[3].push_back(14); 
+  elementProps[PRISM15].vvFacesNodes[3].push_back(10);
   
-  elementProps[PRISM15].vvFacesNodes[4].push_back(2); elementProps[PRISM15].vvFacesNodes[4].push_back(7);
-  elementProps[PRISM15].vvFacesNodes[4].push_back(0); elementProps[PRISM15].vvFacesNodes[4].push_back(8);  
-  elementProps[PRISM15].vvFacesNodes[4].push_back(3); elementProps[PRISM15].vvFacesNodes[4].push_back(13);
-  elementProps[PRISM15].vvFacesNodes[4].push_back(5); elementProps[PRISM15].vvFacesNodes[4].push_back(11);  
+  elementProps[PRISM15].vvFacesNodes[4].push_back(2); 
+  elementProps[PRISM15].vvFacesNodes[4].push_back(0);
+  elementProps[PRISM15].vvFacesNodes[4].push_back(3); 
+  elementProps[PRISM15].vvFacesNodes[4].push_back(5);  
+  elementProps[PRISM15].vvFacesNodes[4].push_back(7); 
+  elementProps[PRISM15].vvFacesNodes[4].push_back(8);
+  elementProps[PRISM15].vvFacesNodes[4].push_back(13); 
+  elementProps[PRISM15].vvFacesNodes[4].push_back(11);  
 
   /**********************************************/
   /*        prism 20		                */
