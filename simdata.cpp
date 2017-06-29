@@ -86,7 +86,7 @@ SimData::SimData(string inputstream)
   
   // well 1
   vsWell[0].vWellCoordinate.clear();
-  vsWell[0].vWellCoordinate.push_back(0.1); // x
+  vsWell[0].vWellCoordinate.push_back(0.0); // x
   vsWell[0].vWellCoordinate.push_back(0.0); // y
   vsWell[0].vWellCoordinate.push_back(-100.0); // z0
   vsWell[0].vWellCoordinate.push_back(100.0); // z1  
@@ -200,9 +200,9 @@ void SimData::defineRockProperties()
     }
 
       // intial stress
-      double sz = -0;      
-	  double sy = -0;
-	  double sx = -0;
+      double sz = 0;      
+	  double sy = 0;
+	  double sx = 0;
       double sxy = 0;      
       vsCellRockProps[icell].stress[0] = -sx; 
       vsCellRockProps[icell].stress[1] = -sy; 
@@ -248,8 +248,8 @@ void SimData::defineBoundaryAquifersEmil()
 	{
 		if (vsCellCustom[icell].nMarker == 9999992) vsCellRockProps[icell].volmult = 1e5;
 	}	
-
-	// Option 2. loop over all cells and assign the aquifers on the radius
+  
+	//// Option 2. loop over all cells and assign the aquifers on the radius
 	//double radius_aquifer = 48;
 	//for (int icell = 0; icell < nCells; icell++)
 	//{
@@ -258,7 +258,7 @@ void SimData::defineBoundaryAquifersEmil()
 	//	if (distance >= radius_aquifer) vsCellRockProps[icell].volmult = 1e5;
 	//}
 
-	//// loop over all faces and find boundary faces
+	//// Option 3. loop over all faces and find boundary faces
 	//for (int iface = 0; iface < nFaces; iface++)
 	//{
 	//		// criterion 1 (right boundary -1111112)
@@ -1895,6 +1895,9 @@ void SimData::definePhysicalFacets()
   int nfacets = 0;
   int nfluid = 0;
   vsPhysicalFacet.resize(nFaces);
+  vector<set<int>> vDirichletNodesSorted;
+  vDirichletNodesSorted.resize(3);
+  pair<set<int>::iterator, bool> ret;
   for(int iface = 0; iface < nFaces; iface++)
   {
     if( vsFaceCustom[iface].nMarker < 0)
@@ -1918,11 +1921,15 @@ void SimData::definePhysicalFacets()
 	    {
 	      if(vsPhysicalFacet[nfacets].vCondition[k] != dNotNumber)
 	      {
-		vDirichletNode.push_back(vsFaceCustom[iface].vVertices[iv]);
-		vDirichletNodeIdx.push_back(k);
-		vDirichletNodeVal.push_back(vsPhysicalFacet[nfacets].vCondition[k]);
-		nDirichletNodes++;
-	      }
+			  ret = vDirichletNodesSorted[k].insert(vsFaceCustom[iface].vVertices[iv]);
+			  if (ret.second == true)
+			  {
+				  vDirichletNode.push_back(vsFaceCustom[iface].vVertices[iv]);
+				  vDirichletNodeIdx.push_back(k);
+				  vDirichletNodeVal.push_back(vsPhysicalFacet[nfacets].vCondition[k]);
+				  nDirichletNodes++;
+			  }
+		  }
 	    }
 	  }
 	  }
@@ -2038,7 +2045,8 @@ void SimData::createSimpleWells()
       }
     }
   }
-  /*
+  /*<<
+  
   // MATRIX PART
   for ( int iwell = 0; iwell < nWells; iwell++ )
   {

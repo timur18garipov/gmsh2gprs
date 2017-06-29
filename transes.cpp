@@ -1331,6 +1331,10 @@ void CalcTranses::createKarimiApproximation()
   //fprintf(out,"%d\n",NbCVs);
   fprintf ( poutfile,"%s\n","VOLUME" );
   for ( i=0; i<NbCVs; i++ )
+  {
+    double distance = sqrt ( CVx[i]*CVx[i] + CVy[i]*CVy[i]);
+    double mult = 1;
+    CVVolume[i] *= mult;
     fprintf ( poutfile,"%e\n",CVVolume[i] );
 
   fprintf ( poutfile,"%s\n","/\n" );
