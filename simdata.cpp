@@ -22,8 +22,11 @@ SimData::SimData(string inputstream)
   dNotNumber = -999.999;
   dNeimanForce = 1000.0;
   
-  double SigmaH = 286.67;
-  double SigmaV = 500.0;
+  double Sx = 300.0;
+  double Sy = 250.0;
+  //@EMIL thermal
+  // double SigmaX = (250.0 -180) + 500;
+  // double SigmaY = (250.0 -180) + 500;
   
   vPointPass.push_back(0);
   vPointPass.push_back(2);
@@ -47,7 +50,7 @@ SimData::SimData(string inputstream)
   //vsPhysicalBoundary[1].vCondition.push_back(0.0);
   //vsPhysicalBoundary[1].vCondition.push_back(dNotNumber);
   //vsPhysicalBoundary[1].vCondition.push_back(dNotNumber);
-  vsPhysicalBoundary[1].vCondition.push_back(300.0); // Bar
+  vsPhysicalBoundary[1].vCondition.push_back(Sx); // Bar
   
   // Y
   vsPhysicalBoundary[2].ntype = 2;
@@ -55,14 +58,14 @@ SimData::SimData(string inputstream)
   //vsPhysicalBoundary[2].vCondition.push_back(dNotNumber);
   //vsPhysicalBoundary[2].vCondition.push_back(0.0);
   //vsPhysicalBoundary[2].vCondition.push_back(dNotNumber);
-  vsPhysicalBoundary[2].vCondition.push_back(250.0); // Bar
+  vsPhysicalBoundary[2].vCondition.push_back(Sy); // Bar
   
   vsPhysicalBoundary[3].ntype = 2;
   vsPhysicalBoundary[3].nmark = -2222222;  
   //vsPhysicalBoundary[3].vCondition.push_back(dNotNumber);
   //vsPhysicalBoundary[3].vCondition.push_back(0.0);
   //vsPhysicalBoundary[3].vCondition.push_back(dNotNumber);
-  vsPhysicalBoundary[3].vCondition.push_back(250.0); // Bar
+  vsPhysicalBoundary[3].vCondition.push_back(Sy); // Bar
   
   // Z
   vsPhysicalBoundary[4].ntype = 1;
@@ -76,7 +79,6 @@ SimData::SimData(string inputstream)
   vsPhysicalBoundary[5].vCondition.push_back(dNotNumber); // Bar
   vsPhysicalBoundary[5].vCondition.push_back(dNotNumber); // Bar
   vsPhysicalBoundary[5].vCondition.push_back(0.0); // Bar
-  //vsPhysicalBoundary[5].vCondition.push_back(500.0); // Bar
   
   //wells 
   nWells = 1;
@@ -108,8 +110,6 @@ void SimData::defineRockProperties()
     vsCellRockProps[icell].zmf.assign(5,0.0);
     vsCellRockProps[icell].stress.assign(6,0.0);
     vsCellRockProps[icell].biot_plas = 0.0;
-    
-    
     
     if( vsCellCustom[icell].nMarker == 9999999 )
     {
@@ -151,10 +151,6 @@ void SimData::defineRockProperties()
       vsCellRockProps[icell].pore_thermal_expansion = 3.0 * vsCellRockProps[icell].thermal_expansion * (vsCellRockProps[icell].biot - vsCellRockProps[icell].poro); // pores thermal expansion (formula is exact). You may change values.
       vsCellRockProps[icell].poron = 0; // permability calculation k=k0*pow(phi/phi_o,poron)
       vsCellRockProps[icell].model = 0; // Model type 0 - Elasticity, 1 - Drucker Prager (see Manual)
-      
-      // initial composition - no water
-      vsCellRockProps[icell].zmf[1] = 0.5;
-      vsCellRockProps[icell].zmf[0] = 0.5;
 
       // general comments
       // you may add new variables, such as swat, pbub, and etc.
@@ -201,9 +197,6 @@ void SimData::defineRockProperties()
 		  vsCellRockProps[icell].poron = 0; // permability calculation k=k0*pow(phi/phi_o,poron)
 		  vsCellRockProps[icell].model = 0; // Model type 0 - Elasticity, 1 - Drucker Prager (see Manual)
 
-		  // initial composition - no water
-		  vsCellRockProps[icell].zmf[1] = 0.5;
-		  vsCellRockProps[icell].zmf[0] = 0.5;
     }
 
       // intial stress
@@ -215,7 +208,30 @@ void SimData::defineRockProperties()
       vsCellRockProps[icell].stress[1] = -sy; 
       vsCellRockProps[icell].stress[2] = -sz; 
       vsCellRockProps[icell].stress[5] = sxy;
-            
+     
+    //@EMIL THERMAL MODEL
+    /*
+    vsCellRockProps[icell].zmf[0] = 4.542e-05;
+    vsCellRockProps[icell].zmf[1] = 0.0005442;
+    vsCellRockProps[icell].zmf[2] = 0.003342;
+    vsCellRockProps[icell].zmf[3] = 0.0008709;
+    vsCellRockProps[icell].zmf[4] = 1.0 - vsCellRockProps[icell].zmf[ 0] - vsCellRockProps[icell].zmf[ 1] - vsCellRockProps[icell].zmf[ 2] - vsCellRockProps[icell].zmf[ 3];
+
+    vsCellRockProps[icell].thermal_expansion = 1e-5;
+    vsCellRockProps[icell].pore_thermal_expansion = 3.0 * vsCellRockProps[icell].thermal_expansion * ( vsCellRockProps[icell].biot - vsCellRockProps[icell].poro );
+    
+
+    vsCellRockProps[icell].heat_capacity = 942 * 1e-3 *vsCellRockProps[icell].density; // rock heat capacity (same units as for liquids )
+    vsCellRockProps[icell].thc = 216;            // rock thermal conductivity (same units as for liquids )
+ 
+    vsCellRockProps[icell].temp = 373.15;  // do not change (pvt values)
+    vsCellRockProps[icell].pressure = 500; // do not change (pvt values)
+
+    vsCellRockProps[icell].ref_pres = vsCellRockProps[icell].pressure;
+    vsCellRockProps[icell].ref_temp = vsCellRockProps[icell].temp;
+
+     */
+         
       }
 }
 
